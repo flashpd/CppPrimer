@@ -18,7 +18,333 @@
 
 > 编写程序，在标准输出上打印Hello, World。
 
-[code](ch01/ex1-03.cpp)
+```c++
+#include <iostream>
+
+int main()
+{
+    std::cout << "Hello, World";
+    return 0;
+}
+```
 
 
+
+## Exercise 1.4
+
+> 编写程序使用乘法运算符*，来打印两个数的积。
+
+```c++
+#include <iostream>
+
+int main()
+{
+    std::cout << "Enter two numbers." << std::endl;
+    int a, b;
+    std::cin >> a >> b;
+    std::cout << a << " * " << b << " = " << a * b << std::endl;
+
+    return 0;
+}
+```
+
+
+
+## Exercise 1.5
+
+> 重写程序，将每个运算对象的打印放在一条独立的语句中。
+
+```c++
+#include <iostream>
+
+int main()
+{
+    std::cout << "Enter two numbers." << std::endl;
+    int a, b;
+    std::cin >> a >> b;
+    std::cout << a;
+    std::cout << " * ";
+    std::cout << b;
+    std::cout << " = ";
+    std::cout << a * b;
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+
+
+## Exercise 1.6
+
+> 解释下列程序片段是否合法。
+
+```c++
+    std::cout << "The sum of " << v1;
+              << " and " << v2;
+              << " is " << v1 + v2 << std::endl;
+```
+
+不合法。修正后代码 如下：
+
+```c++
+std::cout << "The sum of " << v1 << " and " << v2 << " is " << v1 + v2 << std::endl;
+```
+
+
+
+## Exercise 1.7
+
+> 编译一个包含不正确的嵌套注释的程序，观察编译器返回的错误信息。
+
+```c++
+/*
+* comment pairs /* */ cannot nest.
+* ''cannot nest'' is considered source code,
+* as is the rest of the program
+*/
+
+int main()
+{
+    return 0;
+}
+```
+
+
+
+## Exercise 1.8
+
+> 指出下列哪些输出语句是合法的（如果有的话）
+
+```c++
+std::cout << "/*";
+std::cout << "*/";
+std::cout << /* "*/" */;
+std::cout << /* "*/" /* "/*" */;
+```
+
+1、2、4是合法的
+
+
+
+## Exercise 1.9
+
+> 使用while循环实现50到100的整数相加
+
+```c++
+#include <iostream>
+
+int main()
+{
+    int sum = 0, num = 50;
+    while (num <= 100)
+    {
+        sum += num;
+        num += 1;
+    }
+    std::cout << sum << std::endl;
+
+    return 0;
+}
+```
+
+
+
+## Exercise 1.10
+
+```c++
+#include <iostream>
+
+int main()
+{
+    int i = 10;
+    while (i >= 0)
+    {
+        std::cout << i-- << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+
+
+## Exercise 1.11
+
+```c++
+#include <iostream>
+
+int main()
+{
+    std::cout << "Enter two numbers: " << std::endl;
+    int a, b;
+    std::cin >> a >> b;
+    if (a > b)
+    {
+        int temp = a;
+        a = b;
+        b = temp;
+    }
+    while (a <= b)
+    {
+        std::cout << a << " ";
+        ++a;
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+
+
+## Exercise 1.12
+
+```c++
+int sum = 0;
+for (int i = -100; i <= 100; ++i)
+    sum += i;
+```
+
+结果是：0
+
+
+
+## Exercise 1.13
+
+Ex1.9
+
+```
+#include <iostream>
+
+int main()
+{
+    int sum = 0;
+    for (int i = 50; i <= 100; ++i)
+    {
+        sum += i;
+    }
+    std::cout << sum << std::endl;
+
+    return 0;
+}
+
+```
+
+Ex1.10
+
+```c++
+#include <iostream>
+
+int main()
+{
+    for (int i = 10; i >= 0; --i)
+    {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+Ex1.11
+
+```c++
+#include <iostream>
+
+int main()
+{
+    std::cout << "Enter two numbers: " << std::endl;
+    int a, b;
+    std::cin >> a >> b;
+    if (a > b)
+    {
+        int temp = a;
+        a = b;
+        b = temp;
+    }
+    for (int i = a; i <= b; ++i)
+    {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+
+
+## Exercise 1.14
+
+> 对比for循环和while循环的优缺点。
+
+emmm，for是可以直接在括号内控制循环次数，定义规则，while只需要设置条件。优缺点自行查阅。
+
+
+
+## Exercise 1.15
+
+> 编写程序，包含第14页“再探编译”中讨论的常见错误。熟悉编译器生成的错误信息。
+
+语法错误（syntax error）
+
+```c++
+int main()
+{
+    return 0
+}
+```
+
+类型错误（type error）
+
+```c++
+#include <iostream>
+
+int main()
+{
+    int a = "asd";
+    std::cout << a << std::endl;
+    return 0;
+}
+```
+
+声明错误（declaration error）
+
+```c++
+#include <iostream>
+
+int main()
+{
+    cout << "Hello, World" << std::endl;
+    return 0;
+}
+```
+
+
+
+## Exercise 1.16
+
+> 编写程序，从cin读取一组数，输出其和。
+
+```c++
+#include <iostream>
+
+int main()
+{
+    int sum = 0;
+    for (int i; std::cin >> i; )
+    {
+        sum += i;
+        std::cout << sum << std::endl;
+    }
+    return 0;
+}
+```
+
+
+
+## Exercise 1.17
 
