@@ -178,14 +178,9 @@ int main()
 int main()
 {
     std::cout << "Enter two numbers: " << std::endl;
-    int a, b;
+    int a = 0, b = 0;
     std::cin >> a >> b;
-    if (a > b)
-    {
-        int temp = a;
-        a = b;
-        b = temp;
-    }
+
     while (a <= b)
     {
         std::cout << a << " ";
@@ -348,3 +343,71 @@ int main()
 
 ## Exercise 1.17
 
+如果输入的值都相等，则结果为一行，显示出这个数字出现了多少次；
+
+如果输入的值都不想等，则结果出现的行数和输入的数字个数一样。
+
+
+
+## Exercise 1.18
+
+
+
+## Exercise 1.19
+
+> 改写练习1.11的代码，使其能处理用户输入的第一个数字比第二个数字小的情况。
+
+```c++
+#include <iostream>
+
+int main()
+{
+    std::cout << "Enter two numbers: " << std::endl;
+    int a = 0, b = 0;
+    std::cin >> a >> b;
+    if (a > b)
+    {
+        int temp = a;
+        a = b;
+        b = temp;
+    }
+    while (a <= b)
+    {
+        std::cout << a << " ";
+        ++a;
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+
+
+## Exercise 1.20
+
+> 读取一组书籍销售记录，将每条记录打印到标准输出上。
+
+
+
+## Exercise 1.21
+
+> 读取两个ISBN相同的Sales_item对象，输出他们的和。
+
+
+
+## Exercise 1.22
+
+> 读取多个具有相同ISBN的销售记录，输出所有记录的和。
+
+
+
+## Exercise 1.23
+
+> 读取多条销售记录，并统计每个ISBN有几条销售记录。
+
+## Exercise 1.24
+
+> 输入表示多个ISBN的多条销售记录
+
+## Exercise 1.25
