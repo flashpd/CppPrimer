@@ -369,19 +369,223 @@ long *lp = &i;
 
 
 
+## Exercise 2.25
+
+> 说明下列变量的类型和值。
+
+- (a) int* ip, i, &r = i;
+- (b) int i, *ip = 0;
+- (c) int* ip, ip2;
+
+(a): `ip`是int型指针，`i`是int型，`r`是`i`的引用。
+
+(b): `i`是int型，`ip`是int型空指针。
+
+(c): `ip`是指针，`ip2`是int型。
 
 
 
+## Exercise 2.26
+
+> 下面哪些句子是合法的？如果有不合法的句子，请说明为什么？
+
+- (a) const int buf;
+- (b) int cnt = 0;
+- (c) const int sz = cnt;
+- (d) ++cnt; ++sz;
+
+(b)，(c)，(d)是合法的，(a)中buf应该初始化，(d)中sz被const修饰，不能被修改。
 
 
 
+## Exercise 2.27
+
+> 下面的哪些初始化是合法的？请说明原因。
+
+```c++
+int i = -1, &r = 0;         // 不合法，r是引用，应该引用的是一个对象。
+int *const p2 = &i2;        // 合法。
+const int i = -1, &r = 0;   // 合法。
+const int *const p3 = &i2;  // 合法。
+const int *p1 = &i2;        // 合法。
+const int &const r2;        // 不合法，r2是个引用，不能加const，应该去掉&后的const并初始化
+const int i2 = i, &r = i;   // 合法。
+```
 
 
 
+## Exercise 2.28
+
+> 说明下面的这些定义是什么意思，挑出其中不合法的。
+
+```c++
+int i, *const cp;       // 不合法，cp应该被初始化。
+int *p1, *const p2;     // 不合法，p2应该被初始化。
+const int ic, &r = ic;  // 不合法，ic没有初始化。
+const int *const p3;    // 不合法，p3应该被初始化。
+const int *p;           // 合法。
+```
 
 
 
+## Exercise 2.29
+
+> 假设已有上一个练习中定义的那些变量，则下面的哪些语句是合法的？请说明原因。
+
+```c++
+i = ic;     // 合法。
+p1 = p3;    // 不合法，p3没有被初始化。
+p1 = &ic;   // 不合法，ic被const修饰
+p3 = &ic;   // 不合法，
+p2 = p1;    // 不合法，p2是指针常量，p2自身的值不能被修改。
+ic = *p3;   // 不合法，ic是常量
+```
 
 
 
+## Exercise 2.30
+
+> 对于下面的这些语句，请说明对象被声明成了顶层const还是底层const。
+
+```c++
+const int v2 = 0; int v1 = v2;	//v2是顶层const
+int *p1 = &v1, &r1 = v1;
+//p2是底层const，p3既是顶层const也是底层const，r2是底层const
+const int *p2 = &v2, *const p3 = &i, &r2 = v2;
+```
+
+
+
+## Exercise 2.31
+
+> 假设已有上一个练习中所做的那些声明，则下面的哪些语句是合法的？请说明顶层const和底层const在每个例子中有何体现。
+
+```c++
+r1 = v2; // 合法，r2是顶层const
+p1 = p2; // 不合法，p2是底层const，p1不是
+p2 = p1; // 合法，p1是int型指针，p2是底层const
+p1 = p3; // 不合法，p3包含底层const
+p2 = p3; // 合法，两者都是底层const
+```
+
+
+
+## Exercise 2.32
+
+> 下面的代码是否合法？如果非法，请设法将其修改正确。
+
+```c++
+int null = 0， *p = null；
+```
+
+修改为：
+
+```c++
+int null = 0， *p = &null；
+```
+
+或者
+
+```c++
+int null = 0， *p = nullptr；
+```
+
+
+
+## Exercise 2.33
+
+> 利用本节定义的变量，判断下列语句的运行结果。
+
+```c++
+a=42; // 将a的值置为42
+b=42; // 将b的值置为42
+c=42; // 将c的值置为42
+d=42; // 非法，d本身是个int型指针
+e=42; // 非法，e是常量指针
+g=42; // 非法，g是常量引用，无法被修改
+```
+
+
+
+## Exercise 2.34
+
+> 基于上一个练习中的变量和语句编写一段程序，输出赋值前后变量的内容，你刚才的推断正确吗？如果不对，请反复研读本节的示例直到你明白错在何处为止。
+
+
+
+## Exercise 2.35
+
+> 判断下列定义推断出的类型是什么，然后编写程序进行验证。
+
+```c++
+    const int i = 42;	//
+    auto j = i;			//j是int型
+    const auto &k = i;	//k是int型常量引用
+    auto *p = &i;		//p是int型常量指针
+    const auto j2 = i, &k2 = i;	//j2是常量整型，k2是int型常量引用
+```
+
+
+
+## Exercise 2.36
+
+> 关于下面的代码，请指出每一个变量的类型以及程序结束时它们各自的值。
+
+```c++
+int a = 3, b = 4;
+decltype(a) c = a;		// c是int型，值为3
+decltype((b)) d = a;	// d是int型引用，值为3
+++c;					// 此时c的值为4
+++d;					// 此时d的值为4
+```
+
+
+
+## Exercise 2.37
+
+> 请写出下面的代码中每一个变量的类型和值。
+
+```c++
+int a = 3, b = 4;		
+decltype(a) c = a;		// c是int型，值为3
+decltype(a = b) d = a;	// d是int型引用，值为3
+```
+
+
+
+## Exercise 2.38
+
+> 说明由`decltype`指定类型和由`auto`指定类型有何区别。请举出一个例子，`decltype`指定的类型与`auto`指定的类型一样；再举一个例子，`decltype`指定的类型和`auto`指定的类型不一样。
+
+可以看看StackOverflow的大佬回答：[点击这里](https://stackoverflow.com/questions/21369113/what-is-the-difference-between-auto-and-decltypeauto-when-returning-from-a-fun)
+
+
+
+## Exercise 2.39
+
+> 编译下面的程序观察其运行结果，注意，如果忘记写类定义体后面的分号会发生什么情况？记录下相关信息，以后可能会有用。
+
+```c++
+struct Foo { /* empty  */ } // Note: no semicolon
+int main()
+{
+    return 0;
+}
+```
+
+直接运行会因为第一行没有分号而报错。
+
+
+
+后续三道题先不更了……
+
+## Exercise 2.40
+
+
+
+## Exercise 2.41
+
+
+
+## Exercise 2.42
 
