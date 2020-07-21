@@ -145,3 +145,22 @@ vector<int> v3{42, 42, 42, 42, 42, 42, 42, 42, 42, 42};
 
 ## Exercise 3.20
 
+
+
+## Exercise 3.21
+
+
+
+## Exercise 3.22
+
+
+
+## Exercise 3.23
+
+
+
+## Exercise 3.24
+
+
+
+## Exercise 3.25
