@@ -164,3 +164,86 @@ vector<int> v3{42, 42, 42, 42, 42, 42, 42, 42, 42, 42};
 
 
 ## Exercise 3.25
+
+
+
+## Exercise 3.26
+
+> 在100页的二分搜索程序中，为什么用的是`mid=beg+(end-beg)/2`，而非`mid=(beg+end)/2`;？
+
+因为两个迭代器无法相加
+
+
+
+## Exercise 3.27
+
+> 假设txt_size是一个无参数的函数，它的返回值是int。请回答下列哪个定义是非法的？为什么？
+
+```c++
+unsigned buf_size = 1024;
+
+int ia[buf_size];   // 不合法 buf_size不是常量表达式
+int ia[4 * 7 - 14]; // 合法
+int ia[txt_size()]; // 不合法 维度不是常量表达式
+char st[11] = "fundamental";  // 不合法 没有空间存放空字符
+```
+
+
+
+## Exercise 3.28
+
+> 下列数组中元素的值是什么？
+
+```c++
+string sa[10];      //空串
+int ia[10];         //默认值是0
+
+int main() 
+{
+    string sa2[10]; //全是空串
+    int ia2[10];    //值不确定
+}
+```
+
+
+
+## Exercise 3.29
+
+> 相比于 vector来说，数组有哪些缺点，请列举一些。
+
+1、大小固定
+
+2、没有API
+
+3、Bug prone
+
+
+
+## Exercise 3.30
+
+> 指出下面代码中的索引错误。
+
+```c++
+constexpr size_t array_size = 10;
+int ia[array_size];
+for (size_t ix = 1; ix <= array_size; ++ix)
+      ia[ix] = ix;
+```
+
+第三行ix不能等于array_size
+
+
+
+## Exercise 3.31
+
+
+
+## Exercise 3.32
+
+
+
+## Exercise 3.33
+
+> 对于104页的程序来说，如果不初始化scores将发生什么？
+
+scores内的值都没有定义。
