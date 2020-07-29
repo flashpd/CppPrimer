@@ -119,3 +119,215 @@ if (!status) { /* . . . */ }
 
 
 
+## Exercise 5.12
+
+
+
+## Exercise 5.13
+
+> 下面显示的每个程序都含有一个常见的编程错误，指出错误在哪里，然后修改它们。
+
+```c++
+(a) unsigned aCnt = 0, eCnt = 0, iouCnt = 0;
+    char ch = next_text();
+    switch (ch) {
+        case 'a': aCnt++;
+        case 'e': eCnt++;
+        default: iouCnt++;
+    }
+(b) unsigned index = some_value();
+    switch (index) {
+        case 1:
+            int ix = get_value();
+            ivec[ ix ] = index;
+            break;
+        default:
+            ix = ivec.size()-1;
+            ivec[ ix ] = index;
+    }
+(c) unsigned evenCnt = 0, oddCnt = 0;
+    int digit = get_num() % 10;
+    switch (digit) {
+        case 1, 3, 5, 7, 9:
+            oddcnt++;
+            break;
+        case 2, 4, 6, 8, 10:
+            evencnt++;
+            break;
+    }
+(d) unsigned ival=512, jval=1024, kval=4096;
+    unsigned bufsize;
+    unsigned swt = get_bufCnt();
+    switch(swt) {
+        case ival:
+            bufsize = ival * sizeof(int);
+            break;
+        case jval:
+            bufsize = jval * sizeof(int);
+            break;
+        case kval:
+            bufsize = kval * sizeof(int);
+            break;
+    }
+```
+
+↓
+
+```c++
+(a) unsigned aCnt = 0, eCnt = 0, iouCnt = 0;	// 没有加上break
+    char ch = next_text();
+    switch (ch) {
+        case 'a': aCnt++; break;
+        case 'e': eCnt++; break;
+        default: iouCnt++; break;
+    }
+(b) unsigned index = some_value();	// 跨过case标签的变量应该定义在外面
+	int ix;
+    switch (index) {
+        case 1:
+            ix = get_value();
+            ivec[ ix ] = index;
+            break;
+        default:
+            ix = ivec.size()-1;
+            ivec[ ix ] = index;
+    }
+(c) unsigned evenCnt = 0, oddCnt = 0;
+    int digit = get_num() % 10;
+    switch (digit) {	// case格式不正确
+        case 1: case 3: case 5: case 7: case 9:
+            oddCnt++;	// 变量名错误
+            break;
+        case 2: case 4: case 6: case 8: case 10:
+            evenCnt++;	// 变量名错误
+            break;
+    }
+(d) const unsigned ival=512, jval=1024, kval=4096;
+    unsigned bufsize;
+    unsigned swt = get_bufCnt();
+    switch(swt) {	// case标签只能是整型常量
+        case ival:
+            bufsize = ival * sizeof(int);
+            break;
+        case jval:
+            bufsize = jval * sizeof(int);
+            break;
+        case kval:
+            bufsize = kval * sizeof(int);
+            break;
+    }
+```
+
+
+
+## Exercise 5.14
+
+[大佬代码](https://github.com/Mooophy/Cpp-Primer/blob/master/ch05/ex5_14.cpp)
+
+
+
+## Exercise 5.15
+
+> 说明下列循环的含义并改正其中的错误。
+
+```c++
+(a) for (int ix = 0; ix != sz; ++ix) { /* ... */ }
+    if (ix != sz)
+    // . . .
+(b) int ix;
+    for (ix != sz; ++ix) { /* ... */ }
+(c) for (int ix = 0; ix != sz; ++ix, ++sz) { /*...*/ }
+```
+
+↓
+
+```c++
+(a) int ix;	// ix在for循环外面也要用，所以要定义到外面
+	for (ix = 0; ix != sz; ++ix) { /* ... */ }
+    if (ix != sz)
+    // . . .
+(b) int ix;	// for循环写的不对
+    for (; ix != sz; ++ix) { /* ... */ }
+(c) for (int ix = 0; ix != sz; ++ix) { /*...*/ }	// sz如果也一起增长，for循环无法结束 
+```
+
+
+
+## Exercise 5.16
+
+
+
+## Exercise 5.17
+
+
+
+## Exercise 5.18
+
+> 说明下列循环的含义并改正其中的错误。
+
+```c++
+(a) do 
+        int v1, v2;
+        cout << "Please enter two numbers to sum:" ;
+        if (cin >> v1 >> v2)
+            cout << "Sum is: " << v1 + v2 << endl;
+    while (cin);
+
+(b) do {
+        // . . .
+    } while (int ival = get_response());
+
+(c) do {
+        int ival = get_response();
+    } while (ival);
+```
+
+↓
+
+```c++
+(a) do{	// 需要加上大括号
+        int v1, v2;
+        cout << "Please enter two numbers to sum:" ;
+        if (cin >> v1 >> v2)
+            cout << "Sum is: " << v1 + v2 << endl;
+    }while (cin);
+
+(b) int ival;
+	do {
+        // . . .
+    } while (ival = get_response());
+
+(c) int ival;
+	do {
+        ival = get_response();
+    } while (ival);
+```
+
+
+
+## Exercise 5.19
+
+
+
+## Exercise 5.20
+
+
+
+## Exercise 5.21
+
+
+
+## Exercise 5.22
+
+
+
+## Exercise 5.23
+
+
+
+## Exercise 5.24
+
+
+
+## Exercise 5.25
+
