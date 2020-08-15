@@ -82,3 +82,29 @@ if(read(read(cin, data1), data2))
 
 ## Exercise 7.22
 
+
+
+## Exercise 7.23
+
+
+
+## Exercise 7.24
+
+
+
+## Exercise 7.25
+
+
+
+## Exercise 7.26
+
+
+
+## Exercise 7.27
+
+
+
+
+
+剩下的先留个坑
+
