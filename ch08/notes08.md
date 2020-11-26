@@ -85,5 +85,5 @@
 | strm.str()      | 返回strm所保存的string的拷贝                  |
 | strm.str(s)     | 将string s拷贝到strm中。返回void              |
 
-### 使用istringstream
+
 

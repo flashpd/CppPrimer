@@ -236,3 +236,206 @@ int main(int argc, char **argv)
 }
 ```
 
+
+
+### 练习 8.9
+
+> 使用你为8.1.2节第一个练习所编写的函数打印一个`istringstream`对象的内容。
+
+```cpp
+#include <iostream>
+#include <sstream>
+
+using namespace std;
+
+istream &func(istream &is)
+{
+    string buf;
+    while (is >> buf)
+        cout << buf << endl;
+    is.clear();
+    return is;
+}
+
+int main()
+{
+    istringstream iss("Hello");
+    func(iss);
+    return 0;
+}
+```
+
+
+
+### 练习 8.10
+
+> 编写程序，将来自一个文件中的行保存在一个`vector`中。然后使用一个`istringstream`从`vector`读取数据元素，每次读取一个单词。
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    ifstream ifs("8-4.txt");
+    if (!ifs)
+    {
+        cerr << "No data?!" << endl;
+        return -1;
+    }
+
+    vector<string> vecLine;
+    string line;
+    while (getline(ifs, line))
+        vecLine.push_back(line);
+
+    for (auto &s : vecLine)
+    {
+        istringstream iss(s);
+        string word;
+        while (iss >> word)
+            cout << word << endl;
+    }
+
+    return 0;
+}
+```
+
+
+
+### 练习 8.11
+
+> 本节的程序在外层`while`循环中定义了`istringstream`对象。如果`record`对象定义在循环之外，你需要对程序进行怎样的修改？重写程序，将`record`的定义移到`while`循环之外，验证你设想的修改方法是否正确。
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
+using namespace std;
+
+struct PersonInfo
+{
+    string name;
+    vector<string> phones;
+};
+
+int main()
+{
+    string line, word;
+    vector<PersonInfo> people;
+    istringstream record;
+    while (getline(cin, line))
+    {
+        PersonInfo info;
+        record.clear();
+        record.str(line);
+        record >> info.name;
+        while (record >> word)
+            info.phones.push_back(word);
+
+        people.push_back(info);
+    }
+
+    for (auto &p : people)
+    {
+        cout << p.name << " ";
+        for (auto &s : p.phones)
+            cout << s << " ";
+        cout << endl;
+    }
+
+    return 0;
+}
+```
+
+
+
+### 练习 8.12
+
+> 我们为什么没有在`PersonInfo`中使用类内初始化？
+
+因为这里只需要聚合类就够了，没必要类内初始化
+
+
+
+### 练习 8.13
+
+> 重写本节的电话号码程序，从一个命名文件而非`cin`读取数据
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
+using namespace std;
+
+struct PersonInfo
+{
+    string name;
+    vector<string> phones;
+};
+
+bool vaild(const string &str)
+{
+    return isdigit(str[0]);
+}
+
+string format(const string &str)
+{
+    return str.substr(0, 3) + "-" + str.substr(3, 3) + "-" + str.substr(6);
+}
+
+int main()
+{
+    string line, word;
+    vector<PersonInfo> people;
+    istringstream record;
+    ifstream ifs("8-13.txt");
+    while (getline(ifs, line))
+    {
+        PersonInfo info;
+        record.clear();
+        record.str(line);
+        record >> info.name;
+        while (record >> word)
+            info.phones.push_back(word);
+
+        people.push_back(info);
+    }
+
+    for (const auto &entry : people)
+    {
+        ostringstream formatted, badNums;
+        for (const auto &nums : entry.phones)
+        {
+            if (!vaild(nums)) // 判断是否为无效 如果是则向badNums输入
+                badNums << " " << nums;
+            else
+                formatted << " " << format(nums);
+        }
+
+        if (badNums.str().empty())
+            cout << entry.name << " " << formatted.str() << endl;
+        else
+            cerr << "input error: " << entry.name << " invalid number(s) "
+                 << badNums.str() << endl;
+    }
+
+    return 0;
+}
+```
+
+
+
+### 练习 8.14
+
+> 我们为什么将`entry`和`nums`定义为`const auto&`？
+
+它们都是类类型，使用引用可以避免拷贝，它们的值不需要被修改，所以使用const。
