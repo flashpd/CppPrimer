@@ -74,3 +74,16 @@
 | trunc  | 截断文件                     |
 | binary | 以二进制方式进行IO           |
 
+
+
+## 8.3 string流
+
+| 特有操作        | 解释                                          |
+| --------------- | --------------------------------------------- |
+| sstream strm    | strm是一个未绑定的stringstream对象            |
+| sstream strm(s) | strm是一个sstream对象，保存string s的一个拷贝 |
+| strm.str()      | 返回strm所保存的string的拷贝                  |
+| strm.str(s)     | 将string s拷贝到strm中。返回void              |
+
+### 使用istringstream
+

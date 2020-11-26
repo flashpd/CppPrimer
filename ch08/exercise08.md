@@ -78,9 +78,160 @@ void ReadFileToVec(const string &fileName, vector<string> &vec)
 int main()
 {
     vector<string> vec;
-    ReadFileToVec("text.txt", vec);
+    ReadFileToVec("8-4.txt", vec);
     for (const auto &str : vec)
         cout << str << endl;
+    return 0;
+}
+```
+
+
+
+### 练习 8.5
+
+> 重写上面的程序，将每个单词作为一个独立的元素进行存储。
+
+```cpp
+// 基本同8.4 只需修改while的条件
+void ReadFileToVec(const string &fileName, vector<string> &vec)
+{
+    ifstream ifs(fileName);
+    if (ifs)
+    {
+        string buf;
+        while (ifs >> buf)
+            vec.push_back(buf);
+    }
+}
+```
+
+
+
+### 练习 8.6
+
+> 重写7.1.1节的书店程序，从一个文件中读取交易记录。将文件名作为一个参数传递给`main`。
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include "ex7_26.h"
+// #include "ex7_26.cpp"
+
+using namespace std;
+
+int main(int argc, char **argv)
+{
+    ifstream input(argv[1]);
+
+    Sales_data total;
+    if (read(input, total))
+    {
+        Sales_data trans;
+        while (read(input, trans))
+        {
+            if (total.isbn() == trans.isbn())
+                total.combine(trans);
+            else
+            {
+                print(cout, total) << endl;
+                total = trans;
+            }
+        }
+        print(cout, total) << endl;
+    }
+    else
+    {
+        cerr << "No data?!" << endl;
+    }
+
+    return 0;
+}
+```
+
+
+
+### 练习 8.7
+
+> 修改上一节的书店程序，将结果保存到一个文件中。将输出文件名作为第二个参数传递给`main`函数。
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include "ex7_26.h"
+// #include "ex7_26.cpp"
+
+using namespace std;
+
+int main(int argc, char **argv)
+{
+    ifstream input(argv[1]);
+    ofstream output(argv[2]);
+
+    Sales_data total;
+    if (read(input, total))
+    {
+        Sales_data trans;
+        while (read(input, trans))
+        {
+            if (total.isbn() == trans.isbn())
+                total.combine(trans);
+            else
+            {
+                print(output, total) << endl;
+                total = trans;
+            }
+        }
+        print(output, total) << endl;
+    }
+    else
+    {
+        cerr << "No data?!" << endl;
+    }
+
+    return 0;
+}
+```
+
+
+
+### 练习 8.8
+
+> 修改上一题的程序，将结果追加到给定的文件末尾。对同一个输出文件，运行程序至少两次，检验数据是否得以保留。
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include "ex7_26.h"
+// #include "ex7_26.cpp"
+
+using namespace std;
+
+int main(int argc, char **argv)
+{
+    ifstream input(argv[1]);
+    ofstream output(argv[2], ofstream::app);
+
+    Sales_data total;
+    if (read(input, total))
+    {
+        Sales_data trans;
+        while (read(input, trans))
+        {
+            if (total.isbn() == trans.isbn())
+                total.combine(trans);
+            else
+            {
+                print(output, total) << endl;
+                total = trans;
+            }
+        }
+        print(output, total) << endl;
+    }
+    else
+    {
+        cerr << "No data?!" << endl;
+    }
+
     return 0;
 }
 ```
