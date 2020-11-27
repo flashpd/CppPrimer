@@ -317,3 +317,85 @@ int main()
 deque<string> input; -> list<string> input;
 ```
 
+
+
+### 练习 9.20
+
+> 编写程序，从一个`list<int>`拷贝元素到两个`deque`中。值为偶数的所有元素都拷贝到一个`deque`中，而奇数值元素都拷贝到另一个`deque`中。
+
+```cpp
+#include <iostream>
+#include <list>
+#include <deque>
+
+using namespace std;
+
+int main()
+{
+    list<int> list1{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    deque<int> odd, even;
+    for (auto li : list1)
+        (li & 0x1 ? odd : even).push_back(li);
+
+    for (auto o : odd)
+        cout << o << " ";
+    cout << endl;
+
+    for (auto e : even)
+        cout << e << " ";
+    cout << endl;
+
+    return 0;
+}
+```
+
+
+
+### 练习 9.21
+
+> 如果我们将第308页中使用`insert`返回值将元素添加到`list`中的循环程序改写为将元素插入到`vector`中，分析循环将如何工作。
+
+一样的工作，书上308页
+
+> 第一次调用 `insert` 会将我们刚刚读入的 `string` 插入到 `iter` 所指向的元素之前的位置。`insert` 返回的迭代器恰好指向这个新元素。我们将此迭代器赋予 `iter` 并重复循环，读取下一个单词。只要继续有单词读入，每步 while 循环就会将一个新元素插入到 `iter` 之前，并将 `iter` 改变为新加入元素的尾置。此元素为（新的）首元素。因此，每步循环将一个元素插入到 `list` 首元素之前的位置。
+
+
+
+### 练习 9.22
+
+> 假定`iv`是一个`int`的`vector`，下面的程序存在什么错误？你将如何修改？
+>
+> ```cpp
+> vector<int>::iterator iter = iv.begin(),
+> 					  mid = iv.begin() + iv.size() / 2;
+> while (iter != mid)
+> 	if (*iter == some_val)
+> 		iv.insert(iter, 2 * some_val);
+> ```
+
+循环无法结束，迭代器可能失效
+
+```cpp
+while (iter != mid)
+{
+    if (*iter == some_val)
+    {
+        iter = v.insert(iter, 2 * some_val);
+        ++iter;
+    }
+    ++iter;
+}
+```
+
+
+
+### 练习 9.23
+
+>在本节第一个程序中，若`c.size()` 为1，则`val`、`val2`、`val3`和`val4`的值会是什么？
+
+都是同一个值
+
+
+
+
+
