@@ -397,5 +397,119 @@ while (iter != mid)
 
 
 
+### 练习 9.24
 
+> 编写程序，分别使用`at`、下标运算符、`front` 和 `begin` 提取一个`vector`中的第一个元素。在一个空`vector`上测试你的程序。
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> v(1, 1);
+    cout << v.at(0) << endl;
+    cout << v[0] << endl;
+    cout << v.front() << endl;
+    cout << *v.begin() << endl;
+
+    return 0;
+}
+```
+
+
+
+### 练习 9.25
+
+> 对于第312页中删除一个范围内的元素的程序，如果 `elem1` 与 `elem2` 相等会发生什么？如果 `elem2` 是尾后迭代器，或者 `elem1` 和 `elem2` 皆为尾后迭代器，又会发生什么？
+
+1. 如果`elem1`和`elem2`相等，那么什么也不改变
+2. 如果`elem2`是尾后迭代器，那么从`elem1`到最后的所有元素都将被删除
+3. 同1
+
+
+
+### 练习 9.26
+
+> 使用下面代码定义的`ia`，将`ia`拷贝到一个`vector`和一个`list`中。是用单迭代器版本的`erase`从`list`中删除奇数元素，从`vector`中删除偶数元素。
+>
+> ```cpp
+> int ia[] = { 0, 1, 1, 2, 3, 5, 8, 13, 21, 55, 89 };
+> ```
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <list>
+
+using namespace std;
+
+int main()
+{
+    int ia[] = {0, 1, 1, 2, 3, 5, 8, 13, 21, 55, 89};
+
+    vector<int> vec(ia, end(ia));
+    list<int> lst(vec.begin(), vec.end());
+
+    for (auto it = lst.begin(); it != lst.end();)
+        if (*it & 0x1)
+            it = lst.erase(it);
+        else
+            ++it;
+
+    for (auto it = vec.begin(); it != vec.end();)
+        if (!(*it & 0X1))
+            it = vec.erase(it);
+        else
+            ++it;
+
+    cout << "list:";
+    for (auto i : lst)
+        cout << i << " ";
+
+    cout << "\nvector: ";
+    for (auto i : vec)
+        cout << i << " ";
+    cout << endl;
+
+    return 0;
+}
+```
+
+
+
+### 练习 9.27
+
+> 编写程序，查找并删除`forward_list<int>`中的奇数元素。
+
+```cpp
+#include <iostream>
+#include <forward_list>
+
+using namespace std;
+
+auto remove_odds(forward_list<int> &flist)
+{
+    auto is_odd = [](int i) { return i & 0x1; };
+    flist.remove_if(is_odd);
+}
+
+int main()
+{
+    forward_list<int> data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    remove_odds(data);
+    for (auto i : data)
+        cout << i << " ";
+    cout << endl;
+    return 0;
+}
+```
+
+
+
+### 练习 9.28
+
+> 编写函数，接受一个`forward_list<string>`和两个`string`共三个参数。函数应在链表中查找第一个`string`，并将第二个`string`插入到紧接着第一个`string`之后的位置。若第一个`string`未在链表中，则将第二个`string`插入到链表末尾。
 
