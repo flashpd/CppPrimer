@@ -695,3 +695,229 @@ int main()
 - 读入1048个词时，`capacity`是2048
 
 最后两个是根据本机环境进行推算的，实际情况要看`capacity`的具体实现
+
+
+
+
+
+### 练习 9.41
+
+> 编写程序，从一个`vector<char>`初始化一个`string`。
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<char> vec{'C', '+', '+'};
+    string str(vec.begin(), vec.end());
+    cout << str << endl;
+
+    return 0;
+}
+```
+
+
+
+### 练习 9.42
+
+> 假定你希望每次读取一个字符存入一个`string`中，而且知道最少需要读取100个字符，应该如何提高程序的性能？
+
+使用`reserve(100)`预先分配100个元素的空间
+
+
+
+### 练习 9.43
+
+> 编写一个函数，接受三个`string`参数是`s`、`oldVal` 和`newVal`。使用迭代器及`insert`和`erase`函数将`s`中所有`oldVal`替换为`newVal`。测试你的程序，用它替换通用的简写形式，如，将"tho"替换为"though",将"thru"替换为"through"。
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+auto replace_with(string &s, string const &oldVal, string const &newVal)
+{
+    for (auto cur = s.begin(); cur <= s.end() - oldVal.size();)
+        if (oldVal == string{cur, cur + oldVal.size()})
+            cur = s.erase(cur, cur + oldVal.size()),
+            cur = s.insert(cur, newVal.begin(), newVal.end()),
+            cur += newVal.size();
+        else
+            ++cur;
+}
+
+int main()
+{
+    string s{"To drive straight thru is a foolish, tho courageous act."};
+    replace_with(s, "tho", "though");
+    replace_with(s, "thru", "through");
+    cout << s << endl;
+
+    return 0;
+}
+```
+
+
+
+### 练习 9.44
+
+> 重写上一题的函数，这次使用一个下标和`replace`。
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+auto replace_with(string &s, string const &oldVal, string const &newVal)
+{
+    for (size_t pos = 0; pos <= s.size() - oldVal.size();)
+        if (s[pos] == oldVal[0] && s.substr(pos, oldVal.size()) == oldVal)
+            s.replace(pos, oldVal.size(), newVal),
+                pos += newVal.size();
+        else
+            ++pos;
+}
+
+int main()
+{
+    string s{"To drive straight thru is a foolish, tho courageous act."};
+    replace_with(s, "tho", "though");
+    replace_with(s, "thru", "through");
+    cout << s << endl;
+
+    return 0;
+}
+```
+
+
+
+### 练习 9.45
+
+> 编写一个函数，接受一个表示名字的`string`参数和两个分别表示前缀（如"Mr."或"Mrs."）和后缀（如"Jr."或"III"）的字符串。使用迭代器及`insert`和`append`函数将前缀和后缀添加到给定的名字中，将生成的新`string`返回。
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+auto add_pre_and_suffix(string name, string const &pre, string const &su)
+{
+    name.insert(name.begin(), pre.cbegin(), pre.cend());
+    return name.append(su);
+}
+
+int main()
+{
+    string name("C++");
+    cout << add_pre_and_suffix(name, "Mr.", "Jr.") << endl;
+
+    return 0;
+}
+```
+
+
+
+### 练习 9.46
+
+> 重写上一题的函数，这次使用位置和长度来管理`string`，并只使用`insert`。
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+auto add_pre_and_suffix(string name, string const &pre, string const &su)
+{
+    name.insert(0, pre);
+    name.insert(name.size(), su);
+    return name;
+}
+
+int main()
+{
+    string name("C++");
+    cout << add_pre_and_suffix(name, "Mr.", "Jr.") << endl;
+
+    return 0;
+}
+```
+
+
+
+### 练习 9.47
+
+> 编写程序，首先查找`string`"ab2c3d7R4E6"中每个数字字符，然后查找其中每个字母字符。编写两个版本的程序，第一个要使用`find_first_of`，第二个要使用`find_first_not_of`。
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+    string numbers{"123456789"};
+    string alphabet{"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"};
+    string str{"ab2c3d7R4E6"};
+
+    cout << "numeric characters: ";
+    for (int pos = 0; (pos = str.find_first_of(alphabet, pos)) != string::npos; ++pos)
+        cout << str[pos] << " ";
+
+    cout << "\nalphabetic characters: ";
+    for (int pos = 0; (pos = str.find_first_not_of(alphabet, pos)) != string::npos; ++pos)
+        cout << str[pos] << " ";
+
+    cout << endl;
+    return 0;
+}
+```
+
+
+
+### 练习 9.48
+
+> 假定`name`和`numbers`的定义如325页所示，`numbers.find(name)`返回什么？
+
+返回`string::npos`
+
+
+
+### 练习 9.49
+
+> 如果一个字母延伸到中线之上，如d或f，则称其有上出头部分（`ascender`）。如果一个字母延伸到中线之下，如p或g，则称其有下出头部分（`descender`）。编写程序，读入一个单词文件，输出最长的既不包含上出头部分，也不包含下出头部分的单词。
+
+（这个暂时搁置，附上大佬代码）
+
+```cpp
+#include <string>
+#include <fstream>
+#include <iostream>
+
+using std::cout;
+using std::endl;
+using std::ifstream;
+using std::string;
+
+int main()
+{
+    ifstream ifs("9-49.txt");
+    if (!ifs)
+        return -1;
+
+    string longest;
+    auto update_with = [&longest](string const &curr) {
+        if (string::npos == curr.find_first_not_of("aceimnorsuvwxz"))
+            longest = longest.size() < curr.size() ? curr : longest;
+    };
+    for (string curr; ifs >> curr; update_with(curr))
+        ;
+    cout << longest << endl;
+
+    return 0;
+}
+```
+
