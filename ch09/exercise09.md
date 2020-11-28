@@ -513,3 +513,185 @@ int main()
 
 > 编写函数，接受一个`forward_list<string>`和两个`string`共三个参数。函数应在链表中查找第一个`string`，并将第二个`string`插入到紧接着第一个`string`之后的位置。若第一个`string`未在链表中，则将第二个`string`插入到链表末尾。
 
+```cpp
+void find_and_insert(forward_list<string> &fList, string const &to_find, string const &to_add)
+{
+    auto prev = fList.before_begin();
+    for (auto curr = fList.begin(); curr != fList.end(); prev = curr++)
+    {
+        if (*curr == to_find)
+        {
+            fList.insert_after(curr, to_add);
+            return;
+        }
+    }
+    fList.insert_after(prev, to_add);
+}
+```
+
+
+
+### 练习 9.29
+
+> 假定`vec`包含25个元素，那么`vec.resize(100)`会做什么？如果接下来调用`vec.resize(10)`会做什么？
+
+1. `vec.resize(100)`后，在`vec`尾部添加75个值为0的元素
+2. 调用`vec.resize(10)`会从`vec`末尾删除90个元素
+
+
+
+### 练习 9.30
+
+> 接受单个参数的`resize`版本对元素类型有什么限制（如果有的话）？
+
+元素类型必须提供一个默认构造函数（书本314页）
+
+
+
+### 练习 9.31
+
+> 第316页中删除偶数值元素并复制奇数值元素的程序不能用于`list`或`forward_list`。为什么？修改程序，使之也能用于这些类型。
+
+
+
+### 练习 9.32
+
+> 在第316页的程序中，向下面语句这样调用`insert`是否合法？如果不合法，为什么？
+>
+> ```cpp
+> iter = vi.insert(iter, *iter++);
+> ```
+
+不合法
+
+
+
+### 练习 9.33
+
+> 在本节最后一个例子中，如果不将`insert`的结果赋予`begin`，将会发生什么？编写程序，去掉此赋值语句，验证你的答案。
+
+如果不将`insert`的结果赋予`begin`将会使`begin`失效
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> data{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    for (auto cur = data.begin(); cur != data.end(); ++cur)
+        if (*cur & 0x1)
+            cur = data.insert(cur, *cur), ++cur;
+
+    for (auto i : data)
+        cout << i << " ";
+
+    cout << endl;
+    return 0;
+}
+```
+
+
+
+### 练习 9.34
+
+> 假定`vi`是一个保存`int`的容器，其中有偶数值也有奇数值，分析下面循环的行为，然后编写程序验证你的分析是否正确。
+>
+> ```cpp
+> iter = vi.begin();
+> while (iter != vi.end())
+> 	if (*iter % 2)
+> 		iter = vi.insert(iter, *iter);
+> 	++iter;
+> ```
+
+无限循环
+
+
+
+### 练习 9.35
+
+> 解释一个`vector`的`capacity`和`size`有何区别。
+
+- `capacity`是在不分配新的内存空间的前提下最多可以保存多少元素
+- `size`是指该容器已经保存的元素数目
+
+书本318页
+
+
+
+### 练习 9.36
+
+> 一个容器的`capacity`可能小于它的`size`吗？
+
+不可能
+
+
+
+### 练习 9.37
+
+> 为什么`list`或`array`没有`capacity`成员函数？
+
+`list`是链表，`array`是固定大小
+
+
+
+### 练习 9.38
+
+> 编写程序，探究在你的标准实现中，`vector`是如何增长的。
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> vec;
+    cout << "size(): " << vec.size() << "   capacity(): " << vec.capacity() << endl;
+    for (int i = 1; i < 10; i++)
+    {
+        vec.push_back(i);
+        cout << "size(): " << vec.size() << "   capacity(): " << vec.capacity() << endl;
+    }
+
+    cout << endl;
+    return 0;
+}
+```
+
+
+
+### 练习 9.39
+
+> 解释下面程序片段做了什么：
+>
+> ```cpp
+> vector<string> svec;
+> svec.reserve(1024);
+> string word;
+> while (cin >> word)
+> 	svec.push_back(word);
+> svec.resize(svec.size() + svec.size() / 2);
+> ```
+
+1. 定义一个`vector`容器`svec`
+2. 为它分配1024个字节
+3. 从标准输入中读取字符串，并添加到`svec`中（如果超出1024，可能会引起重新分配）
+4. 将`svec`的`size`修改为当前`size`的1.5倍
+
+
+
+### 练习 9.40
+
+> 如果上一题的程序读入了256个词，在`resize`之后容器的`capacity`可能是多少？如果读入了512个、1000个、或1048个呢？
+
+- 读入256个词时，`capacity`是1024
+- 读入512个词时，`capacity`是1024
+- 读入1000个词时，`capacity`是1500
+- 读入1048个词时，`capacity`是2048
+
+最后两个是根据本机环境进行推算的，实际情况要看`capacity`的具体实现
