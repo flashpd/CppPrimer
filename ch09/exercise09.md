@@ -921,3 +921,197 @@ int main()
 }
 ```
 
+
+
+### 练习 9.50
+
+> 编写程序处理一个`vector<string>`，其元素都表示整型值。计算`vector`中所有元素之和。修改程序，使之计算表示浮点值的`string`之和。
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+auto sum_for_int(vector<string> const &vec)
+{
+    int sum = 0;
+    for (auto const &s : vec)
+        sum += stoi(s);
+
+    return sum;
+}
+
+auto sum_for_float(vector<string> const &vec)
+{
+    float sum = 0.0;
+    for (auto const &s : vec)
+        sum += stof(s);
+    return sum;
+}
+
+int main()
+{
+    vector<string> vec = {"1", "2", "3", "4.5"};
+    cout << sum_for_int(vec) << endl;
+    cout << sum_for_float(vec) << endl;
+
+    return 0;
+}
+```
+
+
+
+### 练习 9.51
+
+> 设计一个类，它有三个`unsigned`成员，分别表示年、月和日。为其编写构造函数，接受一个表示日期的`string`参数。你的构造函数应该能处理不同的数据格式，如January 1,1900、1/1/1990、Jan 1 1900 等。
+
+~~不写了~~
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+class My_date
+{
+private:
+    unsigned year, month, day;
+
+public:
+    My_date(const string &s)
+    {
+
+        unsigned tag;
+        unsigned format;
+        format = tag = 0;
+
+        // 1/1/1900
+        if (s.find_first_of("/") != string ::npos)
+        {
+            format = 0x01;
+        }
+
+        // January 1, 1900 or Jan 1, 1900
+        if ((s.find_first_of(',') >= 4) && s.find_first_of(',') != string ::npos)
+        {
+            format = 0x10;
+        }
+        else
+        { // Jan 1 1900
+            if (s.find_first_of(' ') >= 3 && s.find_first_of(' ') != string ::npos)
+            {
+                format = 0x10;
+                tag = 1;
+            }
+        }
+
+        switch (format)
+        {
+
+        case 0x01:
+            day = stoi(s.substr(0, s.find_first_of("/")));
+            month = stoi(s.substr(s.find_first_of("/") + 1, s.find_last_of("/") - s.find_first_of("/")));
+            year = stoi(s.substr(s.find_last_of("/") + 1, 4));
+
+            break;
+
+        case 0x10:
+            if (s.find("Jan") < s.size())
+                month = 1;
+            if (s.find("Feb") < s.size())
+                month = 2;
+            if (s.find("Mar") < s.size())
+                month = 3;
+            if (s.find("Apr") < s.size())
+                month = 4;
+            if (s.find("May") < s.size())
+                month = 5;
+            if (s.find("Jun") < s.size())
+                month = 6;
+            if (s.find("Jul") < s.size())
+                month = 7;
+            if (s.find("Aug") < s.size())
+                month = 8;
+            if (s.find("Sep") < s.size())
+                month = 9;
+            if (s.find("Oct") < s.size())
+                month = 10;
+            if (s.find("Nov") < s.size())
+                month = 11;
+            if (s.find("Dec") < s.size())
+                month = 12;
+
+            char chr = ',';
+            if (tag == 1)
+            {
+                chr = ' ';
+            }
+            day = stoi(s.substr(s.find_first_of("123456789"), s.find_first_of(chr) - s.find_first_of("123456789")));
+
+            year = stoi(s.substr(s.find_last_of(' ') + 1, 4));
+            break;
+        }
+    }
+
+    void print()
+    {
+        cout << "day:" << day << " "
+             << "month: " << month << " "
+             << "year: " << year;
+    }
+};
+int main()
+{
+    My_date d("Jan 1 1900");
+    d.print();
+    return 0;
+}
+```
+
+
+
+### 练习 9.52
+
+> 使用`stack`处理括号化的表达式。当你看到一个左括号，将其记录下来。当你在一个左括号之后看到一个右括号，从`stack`中`pop`对象，直至遇到左括号，将左括号也一起弹出栈。然后将一个值（括号内的运算结果）`push`到栈中，表示一个括号化的（子）表达式已经处理完毕，被其运算结果所替代。
+
+~~搁置搁置~~
+
+这道题可以延伸为逆波兰求值，以及中缀转后缀表达式。
+
+```cpp
+#include <stack>
+#include <string>
+#include <iostream>
+
+using std::string; using std::cout; using std::endl; using std::stack;
+
+int main()
+{
+    string expression{ "This is (pezy)." };
+    bool bSeen = false;
+    stack<char> stk;
+    for (const auto &s : expression)
+    {
+        if (s == '(') { bSeen = true; continue; }
+        else if (s == ')') bSeen = false;
+        
+        if (bSeen) stk.push(s);
+    }
+    
+    string repstr;
+    while (!stk.empty())
+    {
+        repstr += stk.top();
+        stk.pop();
+    }
+    
+    expression.replace(expression.find("(")+1, repstr.size(), repstr);
+    
+    cout << expression << endl;
+    
+    return 0;
+}
+```
+
