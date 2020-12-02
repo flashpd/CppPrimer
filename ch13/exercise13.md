@@ -420,3 +420,128 @@ int main()
 
 > 定义一个 `Employee` 类，它包含雇员的姓名和唯一的雇员证号。为这个类定义默认构造函数，以及接受一个表示雇员姓名的 `string` 的构造函数。每个构造函数应该通过递增一个 `static` 数据成员来生成一个唯一的证号。
 
+```cpp
+#include <iostream>
+using namespace std;
+
+class Employee
+{
+public:
+    Employee();
+    Employee(const string &name);
+
+    const int id() const { return id_; }
+
+private:
+    string name_;
+    int id_;
+    static int s_increment;
+};
+
+int Employee::s_increment = 0;
+Employee::Employee()
+{
+    id_ = s_increment++;
+}
+
+Employee::Employee(const string &name)
+{
+    id_ = s_increment++;
+    name_ = name;
+}
+```
+
+
+
+### 练习 13.19
+
+> 你的 `Employee` 类需要定义它自己的拷贝控制成员吗？如果需要，为什么？如果不需要，为什么？实现你认为 `Employee` 需要的拷贝控制成员。
+
+可以显式的阻止拷贝
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Employee
+{
+public:
+    Employee();
+    Employee(const string &name);
+    Employee(const Employee &) = delete;
+    Employee &operator=(const Employee &) = delete;
+
+    const int id() const { return id_; }
+
+private:
+    string name_;
+    int id_;
+    static int s_increment;
+};
+```
+
+
+
+### 练习 13.20
+
+> 解释当我们拷贝、赋值或销毁 `TextQuery` 和 `QueryResult` 类对象时会发生什么？
+
+成员被复制
+
+
+
+### 练习 13.21
+
+> 你认为 `TextQuery` 和 `QueryResult` 类需要定义它们自己版本的拷贝控制成员吗？如果需要，为什么？实现你认为这两个类需要的拷贝控制操作。
+
+合成的版本满足所有的需求，因此不需要自定义拷贝控制成员。
+
+
+
+### 练习 13.22
+
+> 假定我们希望 `HasPtr` 的行为像一个值。即，对于对象所指向的 `string` 成员，每个对象都有一份自己的拷贝。我们将在下一节介绍拷贝控制成员的定义。但是，你已经学习了定义这些成员所需的所有知识。在继续学习下一节之前，为 `HasPtr` 编写拷贝构造函数和拷贝赋值运算符。
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class HasPtr
+{
+public:
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0) {}
+    HasPtr(const HasPtr &hp) : ps(new string(*hp.ps)), i(hp.i) {}
+    HasPtr &operator=(const HasPtr &hp)
+    {
+        auto new_p = new string(*hp.ps);
+        delete ps;
+        ps = new_p;
+        i = hp.i;
+        return *this;
+    }
+
+    ~HasPtr()
+    {
+        delete ps;
+    }
+
+private:
+    string *ps;
+    int i;
+};
+```
+
+
+
+### 练习 13.23
+
+> 比较上一节练习中你编写的拷贝控制成员和这一节中的代码。确定你理解了你的代码和我们的代码之间的差异。
+
+
+
+### 练习 13.24
+
+> 如果本节的 `HasPtr` 版本未定义析构函数，将会发生什么？如果未定义拷贝构造函数，将会发生什么？
+
+- 如果没有定义析构函数：会导致类中动态分配的内存无法被释放，造成内存泄漏。
+- 如果没有定义拷贝构造函数：
