@@ -698,7 +698,7 @@ using namespace std;
 class HasPtr
 {
 public:
-    friend void swap1(HasPtr &, HasPtr &);
+    friend void swap(HasPtr &, HasPtr &);
     HasPtr(const string &s = string()) : ps(new string(s)), i(0) {}
     HasPtr(const HasPtr &hp) : ps(new string(*hp.ps)), i(hp.i) {}
     HasPtr &operator=(const HasPtr &hp)
@@ -725,7 +725,7 @@ private:
     int i;
 };
 
-inline void swap1(HasPtr &lhs, HasPtr &rhs)
+inline void swap(HasPtr &lhs, HasPtr &rhs)
 {
     using std::swap;
     swap(lhs.ps, rhs.ps);
@@ -743,12 +743,29 @@ int main()
     hp2->show();
     cout << endl;
 
-    swap1(*hp1, *hp2);  // 如果将本代码中的swap1都改成swap，则不会打印“call swap...”
+    swap(*hp1, *hp2); // 这里会调用自定义的swap
     hp1->show();
     hp2->show();
+    cout << endl;
 
+    swap(hp1, hp2); // 这里不会调用自定义swap
+    hp1->show();
+    hp2->show();
     return 0;
 }
+```
+
+```
+执行结果如下
+Hello
+World
+
+call swap(HasPtr &lhs, HasPtr &rhs)
+World
+Hello
+
+Hello
+World
 ```
 
 
@@ -823,6 +840,17 @@ int main()
 
     return 0;
 }
+```
+
+```
+执行结果如下
+call swap(HasPtr &rhs)
+call swap(HasPtr &rhs)
+call swap(HasPtr &rhs)
+call swap(HasPtr &rhs)
+a
+c
+s
 ```
 
 
