@@ -544,4 +544,291 @@ private:
 > 如果本节的 `HasPtr` 版本未定义析构函数，将会发生什么？如果未定义拷贝构造函数，将会发生什么？
 
 - 如果没有定义析构函数：会导致类中动态分配的内存无法被释放，造成内存泄漏。
-- 如果没有定义拷贝构造函数：
+- 如果没有定义拷贝构造函数：会拷贝指针的值，指向同一个地址
+
+
+
+### 练习 13.25
+
+> 假定希望定义 `StrBlob` 的类值版本，而且希望继续使用 `shared_ptr`，这样我们的 `StrBlobPtr` 类就仍能使用指向`vector`的 `weak_ptr` 了。你修改后的类将需要一个拷贝的构造函数和一个拷贝赋值运算符，但不需要析构函数。解释拷贝构造函数和拷贝赋值运算符必须要做什么。解释为什么不需要析构函数。
+
+（留个坑，智能指针还没学）
+
+- 拷贝构造函数和拷贝赋值运算符要重新动态分配内存
+- `StrBlob`使用的是智能指针，当引用计数为0时会自动释放对象，因此不需要析构函数
+
+
+
+### 练习 13.26
+
+> 对上一题中描述的 `strBlob` 类，编写你自己的版本。
+
+
+
+### 练习 13.27
+
+> 定义你自己的使用引用计数版本的 `HasPtr`。
+
+
+
+这几道题的坑都先留着
+
+
+
+### 练习 13.28
+
+> 给定下面的类，为其实现一个默认构造函数和必要的拷贝控制成员。
+>
+> ```cpp
+> (a)
+> class TreeNode
+> {
+> private:
+>     string value;
+>     int count;
+>     TreeNode *left;
+>     TreeNode *right;
+> };
+> (b)
+> class BinStrTree
+> {
+> private:
+>     TreeNode *root;
+> };
+> ```
+
+```cpp
+// ex13_28.h
+#include <iostream>
+using namespace std;
+
+class TreeNode
+{
+public:
+    TreeNode() : value(string()), count(new int(1)), left(nullptr), right(nullptr) {}
+    TreeNode(const TreeNode &rhs)
+        : value(rhs.value), count(rhs.count), left(rhs.left), right(rhs.right)
+    {
+        ++*count;
+    }
+    TreeNode &operator=(const TreeNode &rhs);
+    ~TreeNode()
+    {
+        if (--*count == 0)
+        {
+            delete left;
+            delete right;
+            delete count;
+        }
+    }
+
+private:
+    string value;
+    int *count;
+    TreeNode *left;
+    TreeNode *right;
+};
+
+class BinStrTree
+{
+public:
+    BinStrTree() : root(new TreeNode()) {}
+    BinStrTree(const BinStrTree &bst) : root(new TreeNode(*bst.root)) {}
+    BinStrTree &operator=(const BinStrTree &bst);
+    ~BinStrTree() { delete root; }
+
+private:
+    TreeNode *root;
+};
+```
+
+```cpp
+// ex13_28.cpp
+#include "ex13_28.h"
+
+TreeNode &TreeNode::operator=(const TreeNode &rhs)
+{
+    ++*rhs.count;
+    if (--*count == 0)
+    {
+        delete left;
+        delete right;
+        delete count;
+    }
+
+    value = rhs.value;
+    left = rhs.left;
+    right = rhs.right;
+    count = rhs.count;
+    return *this;
+}
+
+BinStrTree &BinStrTree::operator=(const BinStrTree &bst)
+{
+    TreeNode *new_root = new TreeNode(*bst.root);
+    delete root;
+    root = new_root;
+    return *this;
+}
+
+int main()
+{
+    return 0;
+}
+```
+
+
+
+### 练习 13.29
+
+> 解释 `swap(HasPtr&, HasPtr&)`中对 `swap` 的调用不会导致递归循环。
+
+里面实际运行是`swap(lhs.ps, rhs.ps);`、`swap(lhs.i, rhs.i);`，他们都无法继续调用`swap(HasPtr&, HasPtr&)`，所以不会导致递归循环
+
+
+
+### 练习 13.30
+
+> 为你的类值版本的 `HasPtr` 编写 `swap` 函数，并测试它。为你的 `swap` 函数添加一个打印语句，指出函数什么时候执行。
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class HasPtr
+{
+public:
+    friend void swap1(HasPtr &, HasPtr &);
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0) {}
+    HasPtr(const HasPtr &hp) : ps(new string(*hp.ps)), i(hp.i) {}
+    HasPtr &operator=(const HasPtr &hp)
+    {
+        auto newp = new string(*hp.ps);
+        delete ps;
+        ps = newp;
+        i = hp.i;
+        return *this;
+    }
+
+    ~HasPtr()
+    {
+        delete ps;
+    }
+
+    void show()
+    {
+        cout << *ps << endl;
+    }
+
+private:
+    string *ps;
+    int i;
+};
+
+inline void swap1(HasPtr &lhs, HasPtr &rhs)
+{
+    using std::swap;
+    swap(lhs.ps, rhs.ps);
+    swap(lhs.i, rhs.i);
+    cout << "call swap(HasPtr &lhs, HasPtr &rhs)" << endl;
+}
+
+int main()
+{
+    string s1 = "Hello";
+    string s2 = "World";
+    HasPtr *hp1 = new HasPtr(s1);
+    HasPtr *hp2 = new HasPtr(s2);
+    hp1->show();
+    hp2->show();
+    cout << endl;
+
+    swap1(*hp1, *hp2);  // 如果将本代码中的swap1都改成swap，则不会打印“call swap...”
+    hp1->show();
+    hp2->show();
+
+    return 0;
+}
+```
+
+
+
+### 练习 13.31
+
+> 为你的 `HasPtr` 类定义一个 `<` 运算符，并定义一个 `HasPtr` 的 `vector`。为这个 `vector` 添加一些元素，并对它执行 `sort`。注意何时会调用 `swap`。
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class HasPtr
+{
+public:
+    friend void swap(HasPtr &, HasPtr &);
+    friend bool operator<(const HasPtr &lhs, const HasPtr &rhs);
+
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0) {}
+    HasPtr(const HasPtr &hp) : ps(new string(*hp.ps)), i(hp.i) {}
+    
+    HasPtr &operator=(HasPtr tmp)
+    {
+        this->swap(tmp);
+        return *this;
+    }
+
+    ~HasPtr()
+    {
+        delete ps;
+    }
+
+    void swap(HasPtr &rhs)
+    {
+        using std::swap;
+        swap(ps, rhs.ps);
+        swap(i, rhs.i);
+        cout << "call swap(HasPtr &rhs)" << endl;
+    }
+
+    void show() const
+    {
+        cout << *ps << endl;
+    }
+
+private:
+    string *ps;
+    int i;
+};
+
+void swap(HasPtr &lhs, HasPtr &rhs)
+{
+    lhs.swap(rhs);
+}
+
+bool operator<(const HasPtr &lhs, const HasPtr &rhs)
+{
+    return *lhs.ps < *rhs.ps;
+}
+
+int main()
+{
+    HasPtr s{"s"}, a{"a"}, c{"c"};
+    vector<HasPtr> vec{s, a, c};
+    sort(vec.begin(), vec.end());
+
+    for (auto const &elem : vec)
+        elem.show();
+
+    return 0;
+}
+```
+
+
+
+### 练习 13.32
+
+> 类指针的 `HasPtr` 版本会从 `swap` 函数收益吗？如果会，得到了什么益处？如果不是，为什么？
+
+不会，类值的版本利用`swap`交换指针不用进行内存分配，因此得到了性能的提升。类指针的版本本身就不用进行内存分配，所以不会得到性能提升。
