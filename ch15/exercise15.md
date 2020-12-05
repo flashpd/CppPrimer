@@ -336,6 +336,214 @@ int main()
 
 > 定义你自己的 `Disc_quote` 和 `Bulk_quote`。
 
+```cpp
+#include "Quote.h"
+
+/* Disc_quote的类用来支持不同的折扣策略 */
+class Disc_quote : public Quote
+{
+public:
+    Disc_quote() = default;
+    Disc_quote(const string &book, double price, size_t qty, double disc)
+        : Quote(book, price), quantity(qty), discount(disc) {}
+
+    virtual double net_price(size_t cnt) const = 0;
+
+protected:
+    size_t quantity = 0;   // 折扣适用的购买量
+    double discount = 0.0; // 表示折扣的小数值
+};
+```
+
+```cpp
+#include "Disc_quote.h"
+
+class Bulk_quote : public Disc_quote
+{
+public:
+    Bulk_quote() = default;
+    Bulk_quote(const string &book, double price, size_t qty, double disc)
+        : Disc_quote(book, price, qty, disc) {}
+
+    double net_price(size_t cnt) const override;
+    void debug() const override;
+};
+
+double Bulk_quote::net_price(size_t cnt) const
+{
+    if (cnt >= quantity)
+        return cnt * (1 - discount) * price;
+    else
+        return cnt * price;
+}
+```
+
+
+
+### 练习 15.6
+
+> 改写你在15.2.2节练习中编写的数量受限的折扣策略，令其继承 `Disc_quote`。
+
+```cpp
+#include "Disc_quote.h"
+
+class Limit_quote : public Disc_quote
+{
+public:
+    Limit_quote() = default;
+    Limit_quote(const string book, double price, size_t max, double disc)
+        : Disc_quote(book, price, max, disc) {}
+    double net_price(size_t cnt) const override;
+    void debug() const override;
+};
+
+double Limit_quote::net_price(size_t cnt) const
+{
+    return cnt * price * (cnt > quantity ? 1 - discount : 1);
+}
+```
+
+
+
+### 练习 15.17
+
+> 尝试定义一个 `Disc_quote` 的对象，看看编译器给出的错误信息是什么？
+
+
+
+### 练习 15.18
+
+> 假设给定了第543页和第544页的类，同时已知每个对象的类型如注释所示，判断下面的哪些赋值语句是合法的。解释那些不合法的语句为什么不被允许：
+>
+> ```cpp
+> Base *p = &d1; // d1 的类型是 Pub_Derv
+> p = &d2;       // d2 的类型是 Priv_Derv
+> p = &d3;       // d3 的类型是 Prot_Derv
+> p = &dd1;      // dd1 的类型是 Derived_from_Public
+> p = &dd2;      // dd2 的类型是 Derived_from_Private
+> p = &dd3;      // dd3 的类型是 Derived_from_Protected
+> ```
+
+只有派生类使用`public`继承时，用户代码才可以使用从派生类到基类的转换
+
+```cpp
+Base *p = &d1; // 合法
+p = &d2;       // 不合法
+p = &d3;       // 不合法
+p = &dd1;      // 合法
+p = &dd2;      // 不合法
+p = &dd3;      // 不合法
+```
+
+
+
+### 练习 15.19
+
+> 假设543页和544页的每个类都有如下形式的成员函数：
+>
+> ```cpp
+> void memfcn(Base &b) { b = *this; }
+> ```
+
+
+
+### 练习 15.20
+
+> 编写代码检验你对前面两题的回答是否正确。
+
+
+
+### 练习 15.21
+
+> 从下面这些一般性抽象概念中任选一个（或者选一个你自己的），将其对应的一组类型组织成一个继承体系：
+>
+> ```c
+> (a) 图形文件格式（如gif、tiff、jpeg、bmp）
+> (b) 图形基元（如方格、圆、球、圆锥）
+> (c) C++语言中的类型（如类、函数、成员函数）
+> ```
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Shape
+{
+public:
+    typedef std::pair<double, double> Coordinate;
+
+    Shape() = default;
+    Shape(const std::string &n) : name(n) {}
+
+    virtual double area() const = 0;
+    virtual double perimeter() const = 0;
+
+    virtual ~Shape() = default;
+
+private:
+    std::string name;
+};
+
+class Rectangle : public Shape
+{
+public:
+    Rectangle() = default;
+    Rectangle(const std::string &n,
+              const Coordinate &a,
+              const Coordinate &b,
+              const Coordinate &c,
+              const Coordinate &d) : Shape(n), a(a), b(b), c(c), d(d) {}
+
+    ~Rectangle() = default;
+
+protected:
+    Coordinate a;
+    Coordinate b;
+    Coordinate c;
+    Coordinate d;
+};
+
+class Square : public Rectangle
+{
+public:
+    Square() = default;
+    Square(const std::string &n,
+           const Coordinate &a,
+           const Coordinate &b,
+           const Coordinate &c,
+           const Coordinate &d) : Rectangle(n, a, b, c, d) {}
+
+    ~Square() = default;
+};
+
+int main()
+{
+    return 0;
+}
+```
+
+
+
+### 练习 15.22
+
+> 对于你在上一题中选择的类，为其添加函数的虚函数及公有成员和受保护的成员。
+
+
+
+### 练习 15.23
+
+> 假设第550页的 `D1` 类需要覆盖它继承而来的 `fcn` 函数，你应该如何对其进行修改？如果你修改之后 `fcn` 匹配了 `Base` 中的定义，则该节的那些调用语句将如何解析？
+
+
+
+### 练习 15.24
+
+> 哪种类需要虚析构函数？虚析构函数必须执行什么样的操作？
+
+基类通常都应该定义一个虚析构函数，即使该函数不执行任何实际操作也是如此。（参考15.2节）
+
+
+
 
 
 
