@@ -11,7 +11,7 @@
 **目录**
 
 - 第Ⅰ部分 C++基础
-  - 第6章 函数 
+  - 第6章 函数 [笔记](https://github.com/gcspanda/Cpp-Primer/blob/master/ch06/notes06.md) [练习](https://github.com/gcspanda/Cpp-Primer/blob/master/ch06/exercise06.md) 
   - 第7章 类
 - 第Ⅱ部分 C++标准库
   - 第8章 IO库 [笔记](https://github.com/gcspanda/Cpp-Primer/blob/master/ch08/notes08.md) [练习](https://github.com/gcspanda/Cpp-Primer/blob/master/ch08/exercise08.md)
