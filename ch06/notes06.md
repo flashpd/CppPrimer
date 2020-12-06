@@ -63,6 +63,26 @@ void print(int matrix[][10], int rowSize) { /*...*/ }
 - 返回局部对象的引用是错误的
 - 返回局部对象的指针也是错误的
 
+**引用返回左值**：
+
+- 调用一个返回引用的函数得到左值
+- 其他返回类型得到右值
+
+```cpp
+char &get_val(string &str, string::size_type ix)
+{
+    return str[ix]; // get_val假定索引是有效的
+}
+
+int main()
+{
+    string s("a value");
+    cout << s << endl;   // 输出a value
+    get_val(s, 0) = 'A'; // 将s[0]的值改为A
+    cout << s << endl;   // 输出A value
+}
+```
+
 
 
 ### 返回数组指针
